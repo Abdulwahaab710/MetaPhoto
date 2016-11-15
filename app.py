@@ -1,21 +1,32 @@
-from flask import render_template, Flask, request, jsonify
+from flask import render_template, Flask, request
 import sys
 import exifTags
 
 UPLOAD_FOLDER = './temp'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 @app.route('/')
 @app.route('/home')
 def home():
     return render_template('index.html')
 
+
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
-    exifTags.getMetaData(request.files['file'], None)
-    return 'hello'
+    metaData = exifTags.getMetaData(request.files['file'], None)
+    body = '<table><tr><th>EXIF Data</th><th></th></tr>'
+    if metaData:
+        for key, value in metaData.iteritems():
+            body += '<tr><td><b>{0}</b></td><td>{1}</td></tr>'.format(
+                key, value
+            )
+        body += '</table>'
+    return body
+
+
 # ERROR HANDLING
 @app.errorhandler(405)
 def methodNotAllowed(e):
