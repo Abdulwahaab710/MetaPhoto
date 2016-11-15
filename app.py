@@ -1,6 +1,7 @@
 from flask import render_template, Flask, request
 import sys
 import exifTags
+import re
 
 UPLOAD_FOLDER = './temp'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -17,14 +18,7 @@ def home():
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
     metaData = exifTags.getMetaData(request.files['file'], None)
-    body = '<table><tr><th>EXIF Data</th><th></th></tr>'
-    if metaData:
-        for key, value in metaData.iteritems():
-            body += '<tr><td><b>{0}</b></td><td>{1}</td></tr>'.format(
-                key, value
-            )
-        body += '</table>'
-    return body
+    return render_template('results.html', metaData=metaData)
 
 
 # ERROR HANDLING
