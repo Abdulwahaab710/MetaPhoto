@@ -1,0 +1,23 @@
+{% extends "_base.html" %}
+{% block title %}Results{% endblock %}
+{% block content %}
+<table class="table table-striped">
+        <thead>
+            <tr>
+                <td>Exif Results</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, value in metaData.iteritems() %}
+                <tr>
+                    <td>
+                        <b>{{ key }}</b>
+                    </td>
+                    <td>
+                        {{ value }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
