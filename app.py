@@ -1,12 +1,36 @@
-from flask import render_template, Flask, request
+from flask import render_template, Flask, request, session, abort
+from flask.ext.session import Session
 import sys
 import exifTags
-import re
+# import re
+import uuid
 
+sess = Session()
 UPLOAD_FOLDER = './temp'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
+@app.before_request
+def csrf_protect():
+    if request.method == "POST":
+        token = session.pop('_csrf_token', None)
+        if not token or token != request.form.get('_csrf_token'):
+            abort(403)
+
+
+def generate_random_string():
+    return str(uuid.uuid4())
+
+
+def generate_csrf_token():
+    if '_csrf_token' not in session:
+        session['_csrf_token'] = generate_random_string()
+    return session['_csrf_token']
+
+
+app.jinja_env.globals['csrf_token'] = generate_csrf_token
 
 
 @app.route('/')
@@ -47,6 +71,9 @@ def serviceUnavailable(e):
 
 
 if __name__ == '__main__':
+    app.secret_key = 'super secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
+    sess.init_app(app)
     try:
         appPort = int(sys.argv[1])
     except IndexError:
