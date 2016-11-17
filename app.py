@@ -54,7 +54,7 @@ def methodNotAllowed(e):
 
 @app.errorhandler(404)
 def notFound(e):
-    return '<h1>The page you are looking for is not found</h1>'
+    return render_template('404.html'), 404
 
 
 @app.errorhandler(403)
@@ -64,10 +64,7 @@ def forbidden(e):
 
 @app.errorhandler(503)
 def serviceUnavailable(e):
-    return "<h1>"
-"You don\'t have the required premissions to view this page"
-"</h1>"
-
+    return render_template('503.html'), 503
 
 if __name__ == '__main__':
     app.secret_key = 'super secret key'
