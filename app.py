@@ -4,6 +4,7 @@ import sys
 import exifTags
 # import re
 import uuid
+import logging
 
 sess = Session()
 UPLOAD_FOLDER = './temp'
@@ -13,6 +14,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
 app.logger.setLevel(logging.ERROR)
+
+
 @app.before_request
 def csrf_protect():
     if request.method == "POST":
