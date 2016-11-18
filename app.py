@@ -70,12 +70,4 @@ if __name__ == '__main__':
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
     sess.init_app(app)
-    try:
-        appPort = int(sys.argv[1])
-    except IndexError:
-        appPort = 80
-    app.run(
-        debug=True,
-        host='0.0.0.0',
-        port=appPort
-    )
+    app.run()
