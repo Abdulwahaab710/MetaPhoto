@@ -4,12 +4,16 @@ import sys
 import exifTags
 # import re
 import uuid
+import logging
 
 sess = Session()
 UPLOAD_FOLDER = './temp'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 
 
 @app.before_request
@@ -70,12 +74,4 @@ if __name__ == '__main__':
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
     sess.init_app(app)
-    try:
-        appPort = int(sys.argv[1])
-    except IndexError:
-        appPort = 80
-    app.run(
-        debug=True,
-        host='0.0.0.0',
-        port=appPort
-    )
+    app.run()
